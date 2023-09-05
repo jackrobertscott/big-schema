@@ -3,6 +3,7 @@ import { Schema } from "./schema";
 export type ValidationResult<T> = {
   value: T | null;
   errors: ValidationError[];
+  ok: boolean;
 };
 
 export type ValidationError = string;
@@ -16,11 +17,11 @@ export function validateBig<T>(
   let value: T | null = null;
 
   if (schema.required && (data === null || data === undefined)) {
-    return { value, errors: [`${prefix} is required.`] };
+    return { value, errors: [`${prefix} is required.`], ok: false };
   }
 
   if (data === null || data === undefined) {
-    return { value: data, errors };
+    return { value: data, errors, ok: !!errors.length };
   }
 
   switch (schema.type) {
@@ -160,5 +161,9 @@ export function validateBig<T>(
       break;
   }
 
-  return { value: data, errors };
+  return {
+    value: data,
+    errors,
+    ok: !!errors.length,
+  };
 }

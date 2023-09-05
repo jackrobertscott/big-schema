@@ -58,7 +58,8 @@ const isValidUser = validateBig(userSchema, {
   roles: ['admin', 'user'],
 });
 
-console.log(isValidUser);  // Should print true if the data is valid
+console.log(isValidUser.ok);  // Should print true if the data is valid
+console.log(isValidUser.errors) // Should print any errors
 ```
 
 ### Example 2: Array of Objects
@@ -82,7 +83,8 @@ const isValidBooks = validateBig(bookSchema, [
   { title: 'Brave New World', author: 'Aldous Huxley', publishedYear: 1932 },
 ]);
 
-console.log(isValidBooks);  // Should print true if the data is valid
+console.log(isValidBooks.ok);  // Should print true if the data is valid
+console.log(isValidBooks.errors) // Should print any errors
 ```
 
 ### Example 3: Complex Nested Schema
@@ -135,7 +137,8 @@ const isValidComplexUser = validateBig(complexUserSchema, {
   ],
 });
 
-console.log(isValidComplexUser);  // Should print true if the data is valid
+console.log(isValidComplexUser.ok);  // Should print true if the data is valid
+console.log(isValidComplexUser.errors) // Should print any errors
 ```
 
 These are just examples to illustrate complex schema shapes. The actual behavior would depend on your implementation of `validateBig`.
@@ -259,14 +262,22 @@ const dateSchema = bigDate({ min: new Date('2021-01-01'), max: new Date('2022-01
 The `validateBig` function takes a schema and a data item as arguments and returns a boolean indicating whether the data item is valid according to the schema.
 
 ```typescript
-function validateBig(schema: Schema, data: any): boolean {
+function validateBig<T>(schema: Schema, data: T): ValidationResult<T> {
   // ... implementation here
 }
+
+export type ValidationResult<T> = {
+  value: T | null;
+  errors: ValidationError[];
+  ok: boolean;
+};
+
+export type ValidationError = string;
 ```
 
 Example:
 
 ```typescript
 const isValid = validateBig(bigString({ min: 3 }), 'abc');
-console.log(isValid); // Should print true
+console.log(isValid.ok); // Should print true
 ```
