@@ -7,13 +7,13 @@ This library provides a set of helper functions to create schemas for various Ja
 NPM:
 
 ```shell
-npm install --save schema-io
+npm install --save big-schema
 ```
 
 Yarn:
 
 ```shell
-yarn add schema-io
+yarn add big-schema
 ```
 
 ## Types of Schemas

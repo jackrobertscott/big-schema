@@ -1,16 +1,17 @@
 {
-  "name": "schema-io",
+  "name": "big-schema",
   "version": "0.1.0",
   "description": "A data validation library with support for complex schemas.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/JackScott/schema-io.git"
+    "url": "https://github.com/JackScott/big-schema.git"
   },
   "keywords": [
     "validation",
