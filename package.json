@@ -1,0 +1,27 @@
+{
+  "name": "validate-io",
+  "version": "1.0.0",
+  "description": "A data validation library with support for complex schemas.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JackScott/validate-io.git"
+  },
+  "keywords": [
+    "validation",
+    "typescript",
+    "schema",
+    "validate-io"
+  ],
+  "author": "Jack Scott",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {}
+}
