@@ -17,3 +17,7 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Lock files
+*.lock
+*-lock.json
