@@ -1,6 +1,6 @@
 # Data Validation Library
 
-This library provides a set of helper functions to create schemas for various JavaScript data types, along with a `validateData` function to validate data against these schemas.
+This library provides a set of helper functions to create schemas for various JavaScript data types, along with a `validateBig` function to validate data against these schemas.
 
 ## Installation
 
@@ -34,21 +34,21 @@ We support the following types of schemas:
 Suppose you have an object with nested objects and arrays.
 
 ```typescript
-const userSchema = ioObject({
+const userSchema = bigObject({
   keys: {
-    name: ioString({ required: true, min: 3 }),
-    age: ioNumber({ required: true, min: 18 }),
-    contact: ioObject({
+    name: bigString({ required: true, min: 3 }),
+    age: bigNumber({ required: true, min: 18 }),
+    contact: bigObject({
       keys: {
-        email: ioString({ email: true }),
-        phone: ioString({ pattern: /^[0-9]{10}$/ }),
+        email: bigString({ email: true }),
+        phone: bigString({ pattern: /^[0-9]{10}$/ }),
       },
     }),
-    roles: ioArray({ of: ioString({}) }),
+    roles: bigArray({ of: bigString({}) }),
   },
 });
 
-const isValidUser = validateData(userSchema, {
+const isValidUser = validateBig(userSchema, {
   name: 'John Doe',
   age: 30,
   contact: {
@@ -66,18 +66,18 @@ console.log(isValidUser);  // Should print true if the data is valid
 Suppose you have an array where each item is an object with specific properties.
 
 ```typescript
-const bookSchema = ioArray({
-  of: ioObject({
+const bookSchema = bigArray({
+  of: bigObject({
     keys: {
-      title: ioString({ required: true }),
-      author: ioString({ required: true }),
-      publishedYear: ioNumber({ min: 1900 }),
+      title: bigString({ required: true }),
+      author: bigString({ required: true }),
+      publishedYear: bigNumber({ min: 1900 }),
     },
   }),
   min: 1,
 });
 
-const isValidBooks = validateData(bookSchema, [
+const isValidBooks = validateBig(bookSchema, [
   { title: '1984', author: 'George Orwell', publishedYear: 1949 },
   { title: 'Brave New World', author: 'Aldous Huxley', publishedYear: 1932 },
 ]);
@@ -90,19 +90,19 @@ console.log(isValidBooks);  // Should print true if the data is valid
 Imagine a schema for a user where each user has a list of orders, and each order has a list of products.
 
 ```typescript
-const complexUserSchema = ioObject({
+const complexUserSchema = bigObject({
   keys: {
-    name: ioString({ required: true }),
-    orders: ioArray({
-      of: ioObject({
+    name: bigString({ required: true }),
+    orders: bigArray({
+      of: bigObject({
         keys: {
-          orderId: ioNumber({ required: true }),
-          date: ioDate({ required: true }),
-          products: ioArray({
-            of: ioObject({
+          orderId: bigNumber({ required: true }),
+          date: bigDate({ required: true }),
+          products: bigArray({
+            of: bigObject({
               keys: {
-                productId: ioNumber({ required: true }),
-                quantity: ioNumber({ min: 1, required: true }),
+                productId: bigNumber({ required: true }),
+                quantity: bigNumber({ min: 1, required: true }),
               },
             }),
             min: 1,
@@ -114,7 +114,7 @@ const complexUserSchema = ioObject({
   },
 });
 
-const isValidComplexUser = validateData(complexUserSchema, {
+const isValidComplexUser = validateBig(complexUserSchema, {
   name: 'Jane',
   orders: [
     {
@@ -138,11 +138,11 @@ const isValidComplexUser = validateData(complexUserSchema, {
 console.log(isValidComplexUser);  // Should print true if the data is valid
 ```
 
-These are just examples to illustrate complex schema shapes. The actual behavior would depend on your implementation of `validateData`.
+These are just examples to illustrate complex schema shapes. The actual behavior would depend on your implementation of `validateBig`.
 
 ## Helper Functions
 
-### `ioString(options)`
+### `bigString(options)`
 
 Creates a schema for validating strings.
 
@@ -162,10 +162,10 @@ Options:
 Example:
 
 ```typescript
-const stringSchema = ioString({ min: 3, max: 50, email: true });
+const stringSchema = bigString({ min: 3, max: 50, email: true });
 ```
 
-### `ioNumber(options)`
+### `bigNumber(options)`
 
 Creates a schema for validating numbers.
 
@@ -183,10 +183,10 @@ Options:
 Example:
 
 ```typescript
-const numberSchema = ioNumber({ min: 0, max: 100 });
+const numberSchema = bigNumber({ min: 0, max: 100 });
 ```
 
-### `ioBoolean(options)`
+### `bigBoolean(options)`
 
 Creates a schema for validating booleans.
 
@@ -198,10 +198,10 @@ Options:
 Example:
 
 ```typescript
-const booleanSchema = ioBoolean({ oneOf: [true] });
+const booleanSchema = bigBoolean({ oneOf: [true] });
 ```
 
-### `ioArray(options)`
+### `bigArray(options)`
 
 Creates a schema for validating arrays.
 
@@ -217,10 +217,10 @@ Options:
 Example:
 
 ```typescript
-const arraySchema = ioArray({ min: 1, max: 5, of: ioNumber({ min: 1 }) });
+const arraySchema = bigArray({ min: 1, max: 5, of: bigNumber({ min: 1 }) });
 ```
 
-### `ioObject(options)`
+### `bigObject(options)`
 
 Creates a schema for validating objects.
 
@@ -233,10 +233,10 @@ Options:
 Example:
 
 ```typescript
-const objectSchema = ioObject({ keys: { name: ioString({ required: true }) } });
+const objectSchema = bigObject({ keys: { name: bigString({ required: true }) } });
 ```
 
-### `ioDate(options)`
+### `bigDate(options)`
 
 Creates a schema for validating dates.
 
@@ -251,15 +251,15 @@ Options:
 Example:
 
 ```typescript
-const dateSchema = ioDate({ min: new Date('2021-01-01'), max: new Date('2022-01-01') });
+const dateSchema = bigDate({ min: new Date('2021-01-01'), max: new Date('2022-01-01') });
 ```
 
-## validateData Function
+## validateBig Function
 
-The `validateData` function takes a schema and a data item as arguments and returns a boolean indicating whether the data item is valid according to the schema.
+The `validateBig` function takes a schema and a data item as arguments and returns a boolean indicating whether the data item is valid according to the schema.
 
 ```typescript
-function validateData(schema: Schema, data: any): boolean {
+function validateBig(schema: Schema, data: any): boolean {
   // ... implementation here
 }
 ```
@@ -267,6 +267,6 @@ function validateData(schema: Schema, data: any): boolean {
 Example:
 
 ```typescript
-const isValid = validateData(ioString({ min: 3 }), 'abc');
+const isValid = validateBig(bigString({ min: 3 }), 'abc');
 console.log(isValid); // Should print true
 ```
