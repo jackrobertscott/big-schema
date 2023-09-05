@@ -7,13 +7,13 @@ This library provides a set of helper functions to create schemas for various Ja
 NPM:
 
 ```shell
-npm install --save validate-io
+npm install --save schema-io
 ```
 
 Yarn:
 
 ```shell
-yarn add validate-io
+yarn add schema-io
 ```
 
 ## Types of Schemas
