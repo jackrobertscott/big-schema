@@ -26,15 +26,18 @@ export const validate = <T extends Schema>(
   };
 
   if (value == null) {
-    if ("required" in schema && schema.required)
-      addError("REQUIRED", "Field is required.");
-    return { ok: false, errors };
+    if ("required" in schema && schema.required) {
+      addError("REQUIRED", "Field is required");
+      return { ok: false, errors };
+    } else {
+      return { ok: true, value: value as any };
+    }
   }
 
   switch (schema.type) {
     case "string":
       if (typeof value !== "string") {
-        addError("TYPE", "Expected a string.");
+        addError("TYPE", "Expected a string");
         break;
       }
       if (schema.trim) value = value.trim();
@@ -56,7 +59,7 @@ export const validate = <T extends Schema>(
 
     case "number":
       if (typeof value !== "number") {
-        addError("TYPE", "Expected a number.");
+        addError("TYPE", "Expected a number");
         break;
       }
       if (schema.min !== undefined && value < schema.min)
@@ -74,14 +77,14 @@ export const validate = <T extends Schema>(
       break;
 
     case "boolean":
-      if (typeof value !== "boolean") addError("TYPE", "Expected a boolean.");
+      if (typeof value !== "boolean") addError("TYPE", "Expected a boolean");
       if (schema.oneOf && !schema.oneOf.includes(value))
         addError("OTHER", "Invalid value");
       break;
 
     case "array":
       if (!Array.isArray(value)) {
-        addError("TYPE", "Expected an array.");
+        addError("TYPE", "Expected an array");
         break;
       }
       if (schema.min && value.length < schema.min)
@@ -100,7 +103,7 @@ export const validate = <T extends Schema>(
 
     case "object":
       if (typeof value !== "object" || value === null) {
-        addError("TYPE", "Expected an object.");
+        addError("TYPE", "Expected an object");
         break;
       }
       for (const key in schema.keys) {
@@ -115,7 +118,7 @@ export const validate = <T extends Schema>(
 
     case "date":
       if (!(value instanceof Date)) {
-        addError("TYPE", "Expected a date.");
+        addError("TYPE", "Expected a date");
         break;
       }
       if (schema.min && value < schema.min)
