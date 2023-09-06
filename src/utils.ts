@@ -4,31 +4,78 @@ import {
   DateSchema,
   NumberSchema,
   ObjectSchema,
+  Schema,
   StringSchema,
+  UnionSchema,
 } from "./schema";
 
-export function bigString(options: Omit<StringSchema, "type">): StringSchema {
-  return { type: "string", ...options };
+/**
+ * Create a StringSchema object.
+ * @param opts - Optional configuration for the schema.
+ * @returns A StringSchema object.
+ */
+export function str(opts?: Omit<StringSchema, "type">): StringSchema {
+  return { type: "string", ...opts };
 }
 
-export function bigNumber(options: Omit<NumberSchema, "type">): NumberSchema {
-  return { type: "number", ...options };
+/**
+ * Create a NumberSchema object.
+ * @param opts - Optional configuration for the schema.
+ * @returns A NumberSchema object.
+ */
+export function num(opts?: Omit<NumberSchema, "type">): NumberSchema {
+  return { type: "number", ...opts };
 }
 
-export function bigBoolean(
-  options: Omit<BooleanSchema, "type">
-): BooleanSchema {
-  return { type: "boolean", ...options };
+/**
+ * Create a BooleanSchema object.
+ * @param opts - Optional configuration for the schema.
+ * @returns A BooleanSchema object.
+ */
+export function bool(opts?: Omit<BooleanSchema, "type">): BooleanSchema {
+  return { type: "boolean", ...opts };
 }
 
-export function bigArray(options: Omit<ArraySchema, "type">): ArraySchema {
-  return { type: "array", ...options };
+/**
+ * Create an ArraySchema object.
+ * @param of - Schema for validating items within the array.
+ * @param opts - Optional configuration for the schema.
+ * @returns An ArraySchema object.
+ */
+export function arr<T extends Schema>(
+  of: T,
+  opts?: Omit<ArraySchema<T>, "type" | "of">
+): ArraySchema<T> {
+  return { type: "array", of, ...opts };
 }
 
-export function bigObject(options: Omit<ObjectSchema, "type">): ObjectSchema {
-  return { type: "object", ...options };
+/**
+ * Create an ObjectSchema object.
+ * @param keys - Schema for validating keys within the object.
+ * @param opts - Optional configuration for the schema.
+ * @returns An ObjectSchema object.
+ */
+export function obj<T extends { [key: string]: Schema }>(
+  keys: T,
+  opts?: Omit<ObjectSchema<T>, "type" | "keys">
+): ObjectSchema<T> {
+  return { type: "object", keys, ...opts };
 }
 
-export function bigDate(options: Omit<DateSchema, "type">): DateSchema {
-  return { type: "date", ...options };
+/**
+ * Create a DateSchema object.
+ * @param opts - Optional configuration for the schema.
+ * @returns A DateSchema object.
+ */
+export function date(opts?: Omit<DateSchema, "type">): DateSchema {
+  return { type: "date", ...opts };
+}
+
+/**
+ * Create a UnionSchema object.
+ * @param of - Array of schemas for validating items within the union.
+ * @returns A UnionSchema object.
+ */
+export function union<T extends Schema[]>(of: T): UnionSchema<T> {
+  return { type: "union", of };
 }

@@ -54,7 +54,7 @@ export type BooleanSchema = {
 };
 
 /** Schema for validating array data types */
-export type ArraySchema = {
+export type ArraySchema<T extends Schema> = {
   type: "array";
   /** Specifies if the field is required */
   required?: boolean;
@@ -67,16 +67,16 @@ export type ArraySchema = {
   /** Indicates that all items in the array should be unique */
   unique?: boolean;
   /** Schema for validating items within the array */
-  of?: Schema;
+  of: T;
 };
 
 /** Schema for validating object data types */
-export type ObjectSchema = {
+export type ObjectSchema<T extends { [key: string]: Schema }> = {
   type: "object";
   /** Specifies if the field is required */
   required?: boolean;
   /** Schema for validating keys within the object */
-  keys?: { [key: string]: Schema };
+  keys: T;
   /** Allows properties not defined in `keys` */
   unknown?: boolean;
 };
@@ -96,11 +96,74 @@ export type DateSchema = {
   less?: Date;
 };
 
+/** Schema for validating union data types */
+export type UnionSchema<T extends Schema[]> = {
+  type: "union";
+  /** Schema for validating items within the union */
+  of: T;
+};
+
 /** Union type for all possible schemas */
-export type Schema =
+export type Schema<T extends Schema = any> =
   | StringSchema
   | NumberSchema
   | BooleanSchema
-  | ArraySchema
-  | ObjectSchema
-  | DateSchema;
+  | DateSchema
+  | ArraySchema<T>
+  | ObjectSchema<{ [key: string]: T }>
+  | UnionSchema<T[]>;
+
+/** Map schema to TypeScript type **/
+export type SchemaToType<T extends Schema> = T extends StringSchema
+  ? string
+  : T extends NumberSchema
+  ? number
+  : T extends BooleanSchema
+  ? boolean
+  : T extends ArraySchema<infer U>
+  ? Array<SchemaToType<U>>
+  : T extends ObjectSchema<infer U>
+  ? { [K in keyof U]: SchemaToType<U[K]> }
+  : T extends DateSchema
+  ? Date
+  : T extends UnionSchema<infer U>
+  ? U[number] extends Schema
+    ? SchemaToType<U[number]>
+    : never
+  : never;
+
+/**
+ * Represents the type of validation error.
+ */
+export type ValidationErrorType =
+  | "REQUIRED"
+  | "MIN"
+  | "MAX"
+  | "PATTERN"
+  | "TYPE"
+  | "OTHER";
+
+/**
+ * Represents a single validation error.
+ */
+export interface ValidationError {
+  message: string;
+  type: ValidationErrorType;
+}
+
+/**
+ * Represents a map from schema location to a list of validation errors.
+ */
+export type ValidationErrorMap = {
+  [location: string]: ValidationError[];
+};
+
+/**
+ * Represents the result of a validation operation.
+ * @template T - The TypeScript type that corresponds to the schema.
+ */
+export type ValidationResult<T> =
+  /** Indicates a successful validation with the adjusted value. */
+  | { ok: true; value: T }
+  /** Indicates a failed validation with an object of error locations and error messages. */
+  | { ok: false; errors: ValidationErrorMap };
