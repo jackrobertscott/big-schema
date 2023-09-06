@@ -1,6 +1,6 @@
 {
   "name": "big-schema",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A data validation library with support for complex schemas.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
